@@ -1,0 +1,134 @@
+{
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"OracleResponse": {
+				"properties": {
+					"attestation": {
+						"properties": {
+							"messageHash": {
+								"type": "string"
+							},
+							"message": {
+								"type": "string"
+							},
+							"publicKey": {
+								"type": "string"
+							},
+							"signature": {
+								"type": "string"
+							}
+						},
+						"required": [
+							"messageHash",
+							"message",
+							"publicKey",
+							"signature"
+						],
+						"type": "object"
+					},
+					"lastPrice": {
+						"type": "string"
+					},
+					"timestamp": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"attestation",
+					"lastPrice",
+					"timestamp"
+				],
+				"type": "object"
+			},
+			"PingResponse": {
+				"properties": {
+					"message": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"message"
+				],
+				"type": "object"
+			}
+		},
+		"securitySchemes": {}
+	},
+	"info": {
+		"title": "oracle",
+		"version": "0.0.0",
+		"description": "Reference implementation for an oracle producing price feed cryptographic attestation to be consumed by Elements TapScript opcode CHECKSIGFROMSTACK",
+		"license": {
+			"name": "MIT"
+		},
+		"contact": {}
+	},
+	"openapi": "3.0.0",
+	"paths": {
+		"/oracle/{ticker}": {
+			"get": {
+				"operationId": "GetAttestationForTicker",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{
+											"$ref": "#/components/schemas/OracleResponse"
+										}
+									],
+									"nullable": true
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Oracle"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "ticker",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/ping": {
+			"get": {
+				"operationId": "GetMessage",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PingResponse"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "/"
+		}
+	]
+}

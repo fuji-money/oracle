@@ -1,0 +1,46 @@
+name: Build docker image on git tag
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "*"
+
+env:
+  IMAGE_NAME: oracle
+
+jobs:
+  # Push image to GitHub Packages.
+  # See also https://docs.docker.com/docker-hub/builds/
+  push:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    env:
+      DOCKER_CLI_EXPERIMENTAL: "enabled"
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+        with:
+          install: true
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build image
+        run: >-
+          docker buildx build --push 
+          --file ./$VERSION/Dockerfile 
+          --tag ghcr.io/fuji-money/$IMAGE_NAME:latest 
+          --tag ghcr.io/fuji-money/$IMAGE_NAME:$VERSION 
+          --platform linux/arm64,linux/amd64 .

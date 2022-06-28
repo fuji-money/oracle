@@ -1,0 +1,56 @@
+{
+  "name": "oracle",
+  "version": "0.0.0",
+  "description": "Reference implementation for an oracle producing price feed cryptographic attestation to be consumed by Elements TapScript opcode CHECKSIGFROMSTACK",
+  "main": "build/index.js",
+  "repository": "git@github.com:fuji-money/oracle.git",
+  "license": "MIT",
+  "scripts": {
+    "start": "node build/index.js",
+    "predev": "yarn swagger",
+    "prebuild": "yarn swagger",
+    "build": "tsc",
+    "dev": "concurrently \"nodemon\" \"nodemon -x tsoa spec\"",
+    "swagger": "tsoa spec",
+    "lint": "npx eslint --ignore-path .eslintignore --ext .ts .",
+    "format:check": "npx prettier --ignore-path .gitignore --check \"**/*.+(ts)\"",
+    "format": "npx prettier --ignore-path .gitignore --write \"**/*.+(ts)\""
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.12",
+    "@types/express": "^4.17.13",
+    "@types/morgan": "^1.9.3",
+    "@types/multer": "^1.4.7",
+    "@types/node": "^18.0.0",
+    "@types/swagger-ui-express": "^4.1.3",
+    "@typescript-eslint/eslint-plugin": "^5.30.0",
+    "@typescript-eslint/parser": "^5.30.0",
+    "concurrently": "^7.2.2",
+    "eslint": "^8.18.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.1.0",
+    "multer": "^1.4.5-lts.1",
+    "nodemon": "^2.0.18",
+    "prettier": "^2.7.1",
+    "ts-node": "^10.8.1",
+    "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "axios": "^0.27.2",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "ecpair": "^2.0.1",
+    "express": "^4.18.1",
+    "morgan": "^1.10.0",
+    "swagger-ui-express": "^4.4.0",
+    "tiny-secp256k1": "^2.2.1",
+    "tsoa": "^4.1.0"
+  },
+  "nodemonConfig": {
+    "watch": [
+      "src"
+    ],
+    "ext": "ts",
+    "exec": "ts-node src/index.ts"
+  }
+}
