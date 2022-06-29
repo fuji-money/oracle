@@ -21,6 +21,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      # get current  tag
+      - name: tag
+        id: next_tag
+        run: echo ::set-output name=tag::${GITHUB_REF#refs/tags/}
+
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       
@@ -42,5 +48,5 @@ jobs:
           docker buildx build --push 
           --file Dockerfile 
           --tag ghcr.io/fuji-money/$IMAGE_NAME:latest 
-          --tag ghcr.io/fuji-money/$IMAGE_NAME:$VERSION 
+          --tag ghcr.io/fuji-money/$IMAGE_NAME:${{ steps.next_tag.outputs.tag }} 
           --platform linux/arm64,linux/amd64 .
