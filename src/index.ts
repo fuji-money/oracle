@@ -8,11 +8,11 @@ import cors from 'cors';
 import routerFactory from './routes';
 
 // ENV vars
-const PORT = process.env.FUJI_PORT || 8000;
-const PRIVATE_KEY = process.env.FUJI_ORACLE_PRIVATE_KEY;
+const PORT = process.env.PORT || 8000;
+const PRIVATE_KEY = process.env.PRIVATE_KEY;
 
 if (!PRIVATE_KEY) {
-  console.error('Missing FUJI_ORACLE_PRIVATE_KEY env var');
+  console.error('Missing PRIVATE_KEY env var');
   process.exit(1);
 }
 
