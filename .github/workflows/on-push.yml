@@ -36,6 +36,6 @@ jobs:
       - name: Build
         run: yarn build
 
-      #- name: Test
-      #  run: yarn test --runInBand --ci --coverage
+      - name: Test
+        run: yarn test --runInBand --ci
 

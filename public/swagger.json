@@ -8,31 +8,24 @@
 		"schemas": {
 			"OracleInfo": {
 				"properties": {
-					"publicKey": {
-						"type": "string"
-					},
 					"availableTickers": {
 						"items": {
 							"type": "string"
 						},
 						"type": "array"
+					},
+					"publicKey": {
+						"type": "string"
 					}
 				},
 				"required": [
-					"publicKey",
-					"availableTickers"
+					"availableTickers",
+					"publicKey"
 				],
-				"type": "object",
-				"additionalProperties": false
+				"type": "object"
 			},
 			"OracleAttestation": {
 				"properties": {
-					"timestamp": {
-						"type": "string"
-					},
-					"lastPrice": {
-						"type": "string"
-					},
 					"attestation": {
 						"properties": {
 							"messageHash": {
@@ -51,15 +44,20 @@
 							"signature"
 						],
 						"type": "object"
+					},
+					"lastPrice": {
+						"type": "string"
+					},
+					"timestamp": {
+						"type": "string"
 					}
 				},
 				"required": [
-					"timestamp",
+					"attestation",
 					"lastPrice",
-					"attestation"
+					"timestamp"
 				],
-				"type": "object",
-				"additionalProperties": false
+				"type": "object"
 			},
 			"PingResponse": {
 				"properties": {
