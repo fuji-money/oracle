@@ -10,15 +10,19 @@ type BitfinexResponse = {
   last_price: string;
 };
 
-export type OracleResponse = {
+export type OracleAttestation = {
   timestamp: string;
   lastPrice: string;
   attestation: {
     signature: string;
-    publicKey: string;
     message: string;
     messageHash: string;
   };
+};
+
+export type OracleInfo = {
+  publicKey: string;
+  availableTickers: string[];
 };
 
 @Route('oracle')
@@ -30,10 +34,18 @@ export default class OralceController {
     private url: string
   ) {}
 
+  @Get('/')
+  public getInfo(): OracleInfo {
+    return {
+      publicKey: this.keyPair.publicKey.toString('hex'),
+      availableTickers: this.availableTickers,
+    };
+  }
+
   @Get('/:ticker')
   public async getAttestationForTicker(
     ticker: string
-  ): Promise<OracleResponse | null> {
+  ): Promise<OracleAttestation | null> {
     if (!this.availableTickers.includes(ticker)) return null;
 
     let data: BitfinexResponse;
@@ -56,7 +68,6 @@ export default class OralceController {
         lastPrice: data.last_price,
         attestation: {
           signature: signature.toString('hex'),
-          publicKey: this.keyPair.publicKey.toString('hex'),
           message: message.toString('hex'),
           messageHash: hash.toString('hex'),
         },

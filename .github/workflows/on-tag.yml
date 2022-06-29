@@ -40,7 +40,7 @@ jobs:
       - name: Build image
         run: >-
           docker buildx build --push 
-          --file ./$VERSION/Dockerfile 
+          --file Dockerfile 
           --tag ghcr.io/fuji-money/$IMAGE_NAME:latest 
           --tag ghcr.io/fuji-money/$IMAGE_NAME:$VERSION 
           --platform linux/arm64,linux/amd64 .

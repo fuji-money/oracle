@@ -17,6 +17,12 @@ export default function routerFactory(
     return res.send(response);
   });
 
+  router.get('/oracle', (_req, res) => {
+    const controller = new OralceController(keyPair, availableTickers, url);
+    const response = controller.getInfo();
+    return res.send(response);
+  });
+
   router.get('/oracle/:ticker', async (req, res) => {
     const controller = new OralceController(keyPair, availableTickers, url);
     try {

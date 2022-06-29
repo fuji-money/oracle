@@ -6,17 +6,39 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
-			"OracleResponse": {
+			"OracleInfo": {
 				"properties": {
+					"publicKey": {
+						"type": "string"
+					},
+					"availableTickers": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"publicKey",
+					"availableTickers"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"OracleAttestation": {
+				"properties": {
+					"timestamp": {
+						"type": "string"
+					},
+					"lastPrice": {
+						"type": "string"
+					},
 					"attestation": {
 						"properties": {
 							"messageHash": {
 								"type": "string"
 							},
 							"message": {
-								"type": "string"
-							},
-							"publicKey": {
 								"type": "string"
 							},
 							"signature": {
@@ -26,24 +48,18 @@
 						"required": [
 							"messageHash",
 							"message",
-							"publicKey",
 							"signature"
 						],
 						"type": "object"
-					},
-					"lastPrice": {
-						"type": "string"
-					},
-					"timestamp": {
-						"type": "string"
 					}
 				},
 				"required": [
-					"attestation",
+					"timestamp",
 					"lastPrice",
-					"timestamp"
+					"attestation"
 				],
-				"type": "object"
+				"type": "object",
+				"additionalProperties": false
 			},
 			"PingResponse": {
 				"properties": {
@@ -70,6 +86,28 @@
 	},
 	"openapi": "3.0.0",
 	"paths": {
+		"/oracle": {
+			"get": {
+				"operationId": "GetInfo",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OracleInfo"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Oracle"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
 		"/oracle/{ticker}": {
 			"get": {
 				"operationId": "GetAttestationForTicker",
@@ -81,7 +119,7 @@
 								"schema": {
 									"allOf": [
 										{
-											"$ref": "#/components/schemas/OracleResponse"
+											"$ref": "#/components/schemas/OracleAttestation"
 										}
 									],
 									"nullable": true
