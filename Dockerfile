@@ -15,6 +15,6 @@ COPY --from=builder ./app/public ./public
 COPY --from=builder ./app/build ./build
 
 # $PORT is set by Heroku			
-ENV FUJI_PORT=$PORT
+ENV PORT=$PORT
 
 CMD ["yarn", "start"]
