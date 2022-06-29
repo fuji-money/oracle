@@ -4,9 +4,13 @@ An oracle service that produces cryptographic attestations for a given price fee
 
 ## Supported price feeds
 
-- BitFinex
+- Bitfinex
 
-## 🖥 Local Development
+## Documentation
+
+For API documentation refer to the [Swagger JSON](./public/swagger.json) or use the live [Swagger UI](https://fuji-oracle.herokuapp.com/docs)
+
+## Local Development
 
 Below is a list of commands you will probably find useful.
 
