@@ -13,5 +13,8 @@ COPY yarn.lock ./
 RUN yarn install --frozen-lockfile
 COPY --from=builder ./app/public ./public
 COPY --from=builder ./app/build ./build
-EXPOSE 8000
+
+# $PORT is set by Heroku			
+ENV FUJI_PORT=$PORT
+
 CMD ["yarn", "start"]
