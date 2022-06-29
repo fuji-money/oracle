@@ -24,7 +24,7 @@ const app: Application = express();
 const router = routerFactory(
   oracle,
   ['BTCUSD'],
-  'https://api.bitfinex.com/v1/pubticker/'
+  'https://api.bitfinex.com/v1/pubticker'
 );
 
 app.use(express.json());
