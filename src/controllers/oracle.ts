@@ -3,7 +3,7 @@ import axios from 'axios';
 import crypto from 'crypto';
 import { ECPairInterface } from 'ecpair';
 import { extractErrorMessage } from '../utils/axiosError';
-import { uint8LE } from '../utils/bufferutils';
+import { uint64LE } from '../utils/bufferutils';
 
 type BitfinexResponse = {
   timestamp: string;
@@ -58,8 +58,8 @@ export default class OralceController {
     }
 
     try {
-      const timpestampLE64 = uint8LE(Math.trunc(Number(data.timestamp)));
-      const priceLE64 = uint8LE(Math.trunc(Number(data.last_price)));
+      const timpestampLE64 = uint64LE(Math.trunc(Number(data.timestamp)));
+      const priceLE64 = uint64LE(Math.trunc(Number(data.last_price)));
       const message = Buffer.from([...timpestampLE64, ...priceLE64]);
       const hash = crypto.createHash('sha256').update(message).digest();
       const signature = this.keyPair.signSchnorr(hash);
