@@ -1,4 +1,4 @@
-export function uint8LE(x: number): Buffer {
+export function uint64LE(x: number): Buffer {
   const buffer = Buffer.alloc(8);
   writeUInt64LE(buffer, x, 0);
   return buffer;

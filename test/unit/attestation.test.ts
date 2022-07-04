@@ -1,4 +1,4 @@
-import { uint8LE } from '../../src/utils/bufferutils';
+import { uint64LE } from '../../src/utils/bufferutils';
 import crypto from 'crypto';
 import * as ecc from 'tiny-secp256k1';
 import { ECPairFactory } from 'ecpair';
@@ -62,8 +62,8 @@ describe('attestation', () => {
       const timestampUnix = new Date(t.fixture.timestamp).getTime() / 1000;
       const priceTruncated = Math.trunc(Number(t.fixture.lastPrice));
 
-      const timpestampLE64 = uint8LE(timestampUnix);
-      const priceLE64 = uint8LE(priceTruncated);
+      const timpestampLE64 = uint64LE(timestampUnix);
+      const priceLE64 = uint64LE(priceTruncated);
 
       const message = Buffer.from([...timpestampLE64, ...priceLE64]);
       const hash = crypto.createHash('sha256').update(message).digest();
