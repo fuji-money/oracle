@@ -27,7 +27,9 @@ export default function routerFactory(
     const controller = new OralceController(keyPair, availableTickers, url);
     try {
       const response = await controller.getAttestationForTicker(
-        req.params.ticker
+        req.params.ticker,
+        req.query.timestamp as string,
+        req.query.lastPrice as string
       );
       if (!response)
         return res.status(404).send({

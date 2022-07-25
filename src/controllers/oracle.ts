@@ -1,4 +1,4 @@
-import { Get, Route, Tags } from 'tsoa';
+import { Get, Route, Tags, Path, Query } from 'tsoa';
 import axios from 'axios';
 import crypto from 'crypto';
 import { ECPairInterface } from 'ecpair';
@@ -44,28 +44,36 @@ export default class OralceController {
 
   @Get('/:ticker')
   public async getAttestationForTicker(
-    ticker: string
+    @Path() ticker: string,
+    @Query() timestamp: string,
+    @Query() lastPrice: string
   ): Promise<OracleAttestation | null> {
     if (!this.availableTickers.includes(ticker)) return null;
 
-    let data: BitfinexResponse;
-    try {
-      const response = await axios.get(`${this.url}/${ticker}`);
-      if (response.status !== 200) throw new Error(response.data);
-      data = response.data;
-    } catch (error: unknown) {
-      throw new Error(extractErrorMessage(error));
+    // if we pass the timestamp and lastPrice via querystring we "simulate" the oracle and skip calling the price feed
+    let timestampToUse = timestamp;
+    let lastPriceToUse = lastPrice;
+    if (!timestamp || !lastPrice) {
+      try {
+        const response = await axios.get(`${this.url}/${ticker}`);
+        if (response.status !== 200) throw new Error(response.data);
+        const data: BitfinexResponse = response.data;
+        timestampToUse = data.timestamp;
+        lastPriceToUse = data.last_price;
+      } catch (error: unknown) {
+        throw new Error(extractErrorMessage(error));
+      }
     }
 
     try {
-      const timpestampLE64 = uint64LE(Math.trunc(Number(data.timestamp)));
-      const priceLE64 = uint64LE(Math.trunc(Number(data.last_price)));
+      const timpestampLE64 = uint64LE(Math.trunc(Number(timestampToUse)));
+      const priceLE64 = uint64LE(Math.trunc(Number(lastPriceToUse)));
       const message = Buffer.from([...timpestampLE64, ...priceLE64]);
       const hash = crypto.createHash('sha256').update(message).digest();
       const signature = this.keyPair.signSchnorr(hash);
       return {
-        timestamp: data.timestamp,
-        lastPrice: data.last_price,
+        timestamp: timestampToUse!,
+        lastPrice: lastPriceToUse!,
         attestation: {
           signature: signature.toString('hex'),
           message: message.toString('hex'),

@@ -138,6 +138,22 @@
 						"schema": {
 							"type": "string"
 						}
+					},
+					{
+						"in": "query",
+						"name": "timestamp",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "lastPrice",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
 					}
 				]
 			}
