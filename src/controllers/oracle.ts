@@ -58,7 +58,7 @@ export default class OralceController {
         const response = await axios.get(`${this.url}/${ticker}`);
         if (response.status !== 200) throw new Error(response.data);
         const data: BitfinexResponse = response.data;
-        timestampToUse = data.timestamp;
+        timestampToUse = data.timestamp.split(".")[0];
         lastPriceToUse = data.last_price;
       } catch (error: unknown) {
         throw new Error(extractErrorMessage(error));
