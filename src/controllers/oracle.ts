@@ -58,16 +58,16 @@ export default class OralceController {
         const response = await axios.get(`${this.url}/${ticker}`);
         if (response.status !== 200) throw new Error(response.data);
         const data: BitfinexResponse = response.data;
-        timestampToUse = Number(data.timestamp) * 1000; //bitfinex returns it in seconds
-        lastPriceToUse = Number(data.last_price);
+        timestampToUse = Math.trunc(Number(data.timestamp) * 1000); //bitfinex returns it in seconds
+        lastPriceToUse = Math.trunc(Number(data.last_price));
       } catch (error: unknown) {
         throw new Error(extractErrorMessage(error));
       }
     }
 
     try {
-      const timpestampLE64 = uint64LE(Math.trunc(timestampToUse));
-      const priceLE64 = uint64LE(Math.trunc(lastPriceToUse));
+      const timpestampLE64 = uint64LE(timestampToUse);
+      const priceLE64 = uint64LE(lastPriceToUse);
       const message = Buffer.from([...timpestampLE64, ...priceLE64]);
       const hash = crypto.createHash('sha256').update(message).digest();
       const signature = this.keyPair.signSchnorr(hash);
