@@ -51,29 +51,29 @@ export default class OralceController {
     if (!this.availableTickers.includes(ticker)) return null;
 
     // if we pass the timestamp and lastPrice via querystring we "simulate" the oracle and skip calling the price feed
-    let timestampToUse = timestamp;
-    let lastPriceToUse = lastPrice;
+    let timestampToUse = Number(timestamp);
+    let lastPriceToUse = Number(lastPrice);
     if (!timestamp || !lastPrice) {
       try {
         const response = await axios.get(`${this.url}/${ticker}`);
         if (response.status !== 200) throw new Error(response.data);
         const data: BitfinexResponse = response.data;
-        timestampToUse = data.timestamp;
-        lastPriceToUse = data.last_price;
+        timestampToUse = Number(data.timestamp) * 1000; //bitfinex returns it in seconds
+        lastPriceToUse = Number(data.last_price);
       } catch (error: unknown) {
         throw new Error(extractErrorMessage(error));
       }
     }
 
     try {
-      const timpestampLE64 = uint64LE(Math.trunc(Number(timestampToUse)));
-      const priceLE64 = uint64LE(Math.trunc(Number(lastPriceToUse)));
+      const timpestampLE64 = uint64LE(Math.trunc(timestampToUse));
+      const priceLE64 = uint64LE(Math.trunc(lastPriceToUse));
       const message = Buffer.from([...timpestampLE64, ...priceLE64]);
       const hash = crypto.createHash('sha256').update(message).digest();
       const signature = this.keyPair.signSchnorr(hash);
       return {
-        timestamp: timestampToUse!,
-        lastPrice: lastPriceToUse!,
+        timestamp: timestampToUse!.toString(),
+        lastPrice: lastPriceToUse!.toString(),
         attestation: {
           signature: signature.toString('hex'),
           message: message.toString('hex'),
