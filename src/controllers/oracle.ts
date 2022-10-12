@@ -27,7 +27,7 @@ export type OracleInfo = {
 
 @Route('oracle')
 @Tags('Oracle')
-export default class OralceController {
+export default class OracleController {
   constructor(
     private keyPair: ECPairInterface,
     private availableTickers: string[],
