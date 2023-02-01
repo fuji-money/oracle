@@ -1,9 +1,11 @@
 # Encoding
 
-1. Encoding of the Oracle's signed price attestation
--------------------------------
 
-### JavaScript reference implementation
+## Price Attestation
+Encoding of the Oracle's signed price attestation
+
+
+#### JavaScript
 
 ```js
 // the message is a concatenation of <timestamp, price>
