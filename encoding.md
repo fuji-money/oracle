@@ -1,7 +1,5 @@
 # Encoding
 
-## Price Attestation
-
 Encoding of the Oracle's signed price attestation
 -------------------------------
 
