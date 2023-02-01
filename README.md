@@ -10,6 +10,8 @@ An oracle service that produces cryptographic attestations for a given price fee
 
 For API documentation refer to the [Swagger JSON](./public/swagger.json) or use the live [Swagger UI](https://oracle.fuji.money/docs)
 
+For the [Oracle's signed price attestation](encoding.md)
+
 ## Local Development
 
 Below is a list of commands you will probably find useful.
