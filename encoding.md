@@ -1,6 +1,6 @@
 # Encoding
 
-Encoding of the Oracle's signed price attestation
+1. Encoding of the Oracle's signed price attestation
 -------------------------------
 
 ### JavaScript reference implementation
