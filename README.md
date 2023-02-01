@@ -8,7 +8,7 @@ An oracle service that produces cryptographic attestations for a given price fee
 
 ## Documentation
 
-For API documentation refer to the [Swagger JSON](./public/swagger.json) or use the live [Swagger UI](https://fuji-oracle.herokuapp.com/docs)
+For API documentation refer to the [Swagger JSON](./public/swagger.json) or use the live [Swagger UI](https://oracle.fuji.money/docs)
 
 ## Local Development
 
