@@ -1,5 +1,7 @@
 # Fuji oracle
-An oracle service that produces cryptographic attestations for a given price feed to be consumed by Elements smart contracts. 
+A demo oracle service that produces cryptographic attestations for a given price feed to be consumed by Elements smart contracts. 
+
+**THIS IS NOT MEANT TO BE USED IN PRODUCTION**
 
 
 ## Supported price feeds
