@@ -29,7 +29,8 @@ export default function routerFactory(
       const response = await controller.getAttestationForTicker(
         req.params.ticker,
         req.query.timestamp as string,
-        req.query.lastPrice as string
+        req.query.lastPrice as string,
+        req.query.assetPair as string
       );
       if (!response)
         return res.status(404).send({
