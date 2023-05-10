@@ -154,6 +154,14 @@
 						"schema": {
 							"type": "string"
 						}
+					},
+					{
+						"in": "query",
+						"name": "assetPair",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
 					}
 				]
 			}
