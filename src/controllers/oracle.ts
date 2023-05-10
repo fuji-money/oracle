@@ -68,7 +68,12 @@ export default class OracleController {
     try {
       const timpestampLE64 = uint64LE(timestampToUse);
       const priceLE64 = uint64LE(lastPriceToUse);
-      const message = Buffer.from([...timpestampLE64, ...priceLE64]);
+      const iso4217currencyCode = Buffer.from(ticker.replace('BTC', ''));
+      const message = Buffer.from([
+        ...timpestampLE64,
+        ...priceLE64,
+        ...iso4217currencyCode,
+      ]);
       const hash = crypto.createHash('sha256').update(message).digest();
       const signature = this.keyPair.signSchnorr(hash);
       return {
