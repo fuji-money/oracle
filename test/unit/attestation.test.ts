@@ -11,6 +11,8 @@ const tests = [
     fixture: {
       timestamp: 'Wed Jun 29 2022 13:17:15 GMT+0000',
       lastPrice: '20095.56',
+      assetPair:
+        '25b251070e29ca19043cf33ccd7324e2ddab03ecc4ae0b5e77c4fc0e5cf6c95a184f95df51d642435c1c516b81b297c4db95785b81d54d2e8760eaa770b7e496',
       privateKey:
         '97abcd30d2cac1c96271711e567ee13ec27ce4360def5f58caea31eb7c926062',
       publicKey:
@@ -21,11 +23,12 @@ const tests = [
       priceTruncated: '20095',
       timestampBytes: 'db50bc6200000000',
       lastPriceBytes: '7f4e000000000000',
-      message: 'db50bc62000000007f4e000000000000',
+      message:
+        'db50bc62000000007f4e00000000000025b251070e29ca19043cf33ccd7324e2ddab03ecc4ae0b5e77c4fc0e5cf6c95a184f95df51d642435c1c516b81b297c4db95785b81d54d2e8760eaa770b7e496',
       messageHash:
-        'e712152ffd387b4e8c0cb2e1c0db3d786ea9f792fadd164fffdaeeb6a5dc59bc',
+        'b7369aa5ce10c29c8199d4ee3229e7549183e98ebe0090e8ab513e66b934312f',
       signature:
-        '834d6f7c13d2502cf221c98ca90039daf5543fc26659d92036599c60cdf2e924fdc3fa5a3fff38e2877d5f30ec5825940fc0eeb2ec1f8e1714297589f1387d97',
+        '1aabc3c98e7034985d7f35a6a45485c5d57d752503fc22bc906e42b46edfa505bfab0f3dc6534dd300ccafa0d442c94cb310deb8ae32a0ea3ef81699f67eff3b',
     },
   },
   {
@@ -33,6 +36,8 @@ const tests = [
     fixture: {
       timestamp: 'Fri Dec 31 2021 23:00:00 GMT+0000',
       lastPrice: '47169.37	',
+      assetPair:
+        '25b251070e29ca19043cf33ccd7324e2ddab03ecc4ae0b5e77c4fc0e5cf6c95a184f95df51d642435c1c516b81b297c4db95785b81d54d2e8760eaa770b7e496',
       privateKey:
         '97abcd30d2cac1c96271711e567ee13ec27ce4360def5f58caea31eb7c926062',
       publicKey:
@@ -43,11 +48,12 @@ const tests = [
       priceTruncated: '47169',
       timestampBytes: 'db50bc6200000000',
       lastPriceBytes: '7f4e000000000000',
-      message: '708bcf610000000041b8000000000000',
+      message:
+        '708bcf610000000041b800000000000025b251070e29ca19043cf33ccd7324e2ddab03ecc4ae0b5e77c4fc0e5cf6c95a184f95df51d642435c1c516b81b297c4db95785b81d54d2e8760eaa770b7e496',
       messageHash:
-        'a2bb7e36b10851e8b305a5a91fdebec698d8b4013c4013cc577bcb1b9405445d',
+        '28cd27d8f653bb657d5701f2ee3529faeef153412d4b61a8448932de2be31c18',
       signature:
-        '71a0b684d57c1a2b317b798e2caf21b840598e42d1c0d6966cfdb6266c536166b1a97157bef5eaaa6ee59f0be08986033e633afadd4bc12697d5ec8f38575cc6',
+        '9466e320da47e51daae185199e79c57231485c6731d1ca544f03729e5ca42758f7ac8799a2d3c2313855da1c12c6fd2bfef7423c2f7b1b83a1d03b324a411ae2',
     },
   },
 ];
@@ -65,7 +71,11 @@ describe('attestation', () => {
       const timpestampLE64 = uint64LE(timestampUnix);
       const priceLE64 = uint64LE(priceTruncated);
 
-      const message = Buffer.from([...timpestampLE64, ...priceLE64]);
+      const message = Buffer.from([
+        ...timpestampLE64,
+        ...priceLE64,
+        ...Buffer.from(t.fixture.assetPair, 'hex'),
+      ]);
       const hash = crypto.createHash('sha256').update(message).digest();
       const signature = keyPair.signSchnorr(hash);
 

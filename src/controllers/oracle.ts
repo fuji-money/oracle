@@ -46,7 +46,8 @@ export default class OracleController {
   public async getAttestationForTicker(
     @Path() ticker: string,
     @Query() timestamp: string,
-    @Query() lastPrice: string
+    @Query() lastPrice: string,
+    @Query() assetPair: string
   ): Promise<OracleAttestation | null> {
     if (!this.availableTickers.includes(ticker)) return null;
 
@@ -68,7 +69,11 @@ export default class OracleController {
     try {
       const timpestampLE64 = uint64LE(timestampToUse);
       const priceLE64 = uint64LE(lastPriceToUse);
-      const message = Buffer.from([...timpestampLE64, ...priceLE64]);
+      const message = Buffer.from([
+        ...timpestampLE64,
+        ...priceLE64,
+        ...Buffer.from(assetPair, 'hex'),
+      ]);
       const hash = crypto.createHash('sha256').update(message).digest();
       const signature = this.keyPair.signSchnorr(hash);
       return {
