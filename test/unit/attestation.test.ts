@@ -15,7 +15,7 @@ const tests = [
         '97abcd30d2cac1c96271711e567ee13ec27ce4360def5f58caea31eb7c926062',
       publicKey:
         '03f03225c0efa4da141b7ed4b1d2368732719c9430bd329ed8a757fa0022833d3f',
-      assetPair: 'USD',
+      assetPair: 'BTCUSD',
     },
     expected: {
       timestampUnix: '1656508635',
@@ -38,7 +38,7 @@ const tests = [
         '97abcd30d2cac1c96271711e567ee13ec27ce4360def5f58caea31eb7c926062',
       publicKey:
         '03f03225c0efa4da141b7ed4b1d2368732719c9430bd329ed8a757fa0022833d3f',
-      assetPair: 'USD',
+      assetPair: 'BTCUSD',
     },
     expected: {
       timestampUnix: '1640991600',
@@ -67,7 +67,11 @@ describe('attestation', () => {
       const timpestampLE64 = uint64LE(timestampUnix);
       const priceLE64 = uint64LE(priceTruncated);
 
-      const message = Buffer.from([...timpestampLE64, ...priceLE64, ...Buffer.from(t.fixture.assetPair)]);
+      const message = Buffer.from([
+        ...timpestampLE64,
+        ...priceLE64,
+        ...Buffer.from(t.fixture.assetPair.replace('BTC', '')),
+      ]);
       const hash = crypto.createHash('sha256').update(message).digest();
       const signature = keyPair.signSchnorr(hash);
 
