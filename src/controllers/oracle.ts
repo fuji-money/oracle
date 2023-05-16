@@ -13,6 +13,7 @@ type BitfinexResponse = {
 export type OracleAttestation = {
   timestamp: string;
   lastPrice: string;
+  currency: string;
   attestation: {
     signature: string;
     message: string;
@@ -68,12 +69,19 @@ export default class OralceController {
     try {
       const timpestampLE64 = uint64LE(timestampToUse);
       const priceLE64 = uint64LE(lastPriceToUse);
-      const message = Buffer.from([...timpestampLE64, ...priceLE64]);
+      const USD = 'USD';
+      const currency = Buffer.from(USD);
+      const message = Buffer.from([
+        ...timpestampLE64, 
+        ...priceLE64,
+        ...currency
+      ]);
       const hash = crypto.createHash('sha256').update(message).digest();
       const signature = this.keyPair.signSchnorr(hash);
       return {
         timestamp: timestampToUse!.toString(),
         lastPrice: lastPriceToUse!.toString(),
+        currency: USD,
         attestation: {
           signature: signature.toString('hex'),
           message: message.toString('hex'),

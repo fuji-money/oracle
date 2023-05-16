@@ -45,6 +45,9 @@
 						],
 						"type": "object"
 					},
+					"currency": {
+						"type": "string"
+					},
 					"lastPrice": {
 						"type": "string"
 					},
@@ -54,6 +57,7 @@
 				},
 				"required": [
 					"attestation",
+					"currency",
 					"lastPrice",
 					"timestamp"
 				],
