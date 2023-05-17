@@ -1,7 +1,8 @@
+import * as ecc from 'tiny-secp256k1';
 import { Get, Route, Tags, Path, Query } from 'tsoa';
 import axios from 'axios';
 import crypto from 'crypto';
-import { ECPairInterface } from 'ecpair';
+import { ECPairFactory, ECPairInterface } from 'ecpair';
 import { extractErrorMessage } from '../utils/axiosError';
 import { uint64LE } from '../utils/bufferutils';
 
@@ -75,7 +76,10 @@ export default class OracleController {
         ...iso4217currencyCode,
       ]);
       const hash = crypto.createHash('sha256').update(message).digest();
-      const signature = this.keyPair.signSchnorr(hash);
+      if (!this.keyPair.privateKey) throw new Error('No private key found');
+      const signature = Buffer.from(
+        ecc.signSchnorr(hash, this.keyPair.privateKey, Buffer.alloc(32))
+      );
       return {
         timestamp: timestampToUse!.toString(),
         lastPrice: lastPriceToUse!.toString(),
