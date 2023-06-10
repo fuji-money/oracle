@@ -30,7 +30,7 @@ describe('Price Source', () => {
         makeMockPriceSource(300),
         makeMockPriceSource(200),
         makeMockPriceSource(100),
-        makeMockPriceSource(400)
+        makeMockPriceSource(500)
       );
 
       const price = await priceSource.getPrice(Ticker.BTCUSD);
