@@ -6,6 +6,10 @@ import swaggerUi from 'swagger-ui-express';
 import cors from 'cors';
 
 import routerFactory from './routes';
+import { Ticker } from './domain/ticker';
+import { MedianPriceSource } from './domain/price-source';
+import { BitfinexPriceSource } from './ports/bitfinex';
+import { CoingeckoPriceSource } from './ports/coingecko';
 
 // ENV vars
 const PORT = process.env.PORT || 8000;
@@ -23,8 +27,8 @@ const app: Application = express();
 
 const router = routerFactory(
   oracle,
-  ['BTCUSD'],
-  'https://api.bitfinex.com/v1/pubticker'
+  [Ticker.BTCUSD],
+  new MedianPriceSource(new BitfinexPriceSource(), new CoingeckoPriceSource())
 );
 
 app.use(express.json());

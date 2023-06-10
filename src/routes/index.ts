@@ -3,11 +3,12 @@ import OracleController from '../controllers/oracle';
 import PingController from '../controllers/ping';
 
 import { ECPairInterface } from 'ecpair';
+import { PriceSource } from '../domain/price-source';
 
 export default function routerFactory(
   keyPair: ECPairInterface,
   availableTickers: string[],
-  url: string
+  priceSource: PriceSource
 ) {
   const router = express.Router();
 
@@ -18,13 +19,21 @@ export default function routerFactory(
   });
 
   router.get('/oracle', (_req, res) => {
-    const controller = new OracleController(keyPair, availableTickers, url);
+    const controller = new OracleController(
+      keyPair,
+      availableTickers,
+      priceSource
+    );
     const response = controller.getInfo();
     return res.send(response);
   });
 
   router.get('/oracle/:ticker', async (req, res) => {
-    const controller = new OracleController(keyPair, availableTickers, url);
+    const controller = new OracleController(
+      keyPair,
+      availableTickers,
+      priceSource
+    );
     try {
       const response = await controller.getAttestationForTicker(
         req.params.ticker,
