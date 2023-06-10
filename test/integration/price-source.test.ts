@@ -39,7 +39,7 @@ describe('Price Source', () => {
 
     it('should return the median price (odd number of sources)', async () => {
       const priceSource = new MedianPriceSource(
-        makeMockPriceSource(300),
+        makeMockPriceSource(500),
         makeMockPriceSource(200),
         makeMockPriceSource(100)
       );
