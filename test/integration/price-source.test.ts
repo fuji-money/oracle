@@ -42,7 +42,7 @@ describe('PriceSourceManager', () => {
         makeMockPriceSource(300),
         makeMockPriceSource(200),
         makeMockPriceSource(100),
-        makeMockPriceSource(400),
+        makeMockPriceSource(500),
       ],
       errHandler
     );
@@ -56,7 +56,7 @@ describe('PriceSourceManager', () => {
     const errHandler = mockErrHandler();
     const priceSource = new PriceSourceManager(
       [
-        makeMockPriceSource(300),
+        makeMockPriceSource(500),
         makeMockPriceSource(200),
         makeMockPriceSource(100),
       ],
