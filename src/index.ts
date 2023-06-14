@@ -7,13 +7,25 @@ import cors from 'cors';
 
 import routerFactory from './routes';
 import { Ticker } from './domain/ticker';
-import { MedianPriceSource } from './domain/price-source';
+import { PriceSourceManager } from './domain/price-source';
 import { BitfinexPriceSource } from './ports/bitfinex';
 import { CoingeckoPriceSource } from './ports/coingecko';
+import { KrakenPriceSource } from './ports/kraken';
+import { OkxPriceSource } from './ports/okx';
+import { BinancePriceSource } from './ports/binance';
 
 // ENV vars
 const PORT = process.env.PORT || 8000;
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
+
+// oracle price sources (median will be applied)
+const sources = [
+  new BitfinexPriceSource(),
+  new CoingeckoPriceSource(),
+  new KrakenPriceSource(),
+  new OkxPriceSource(),
+  new BinancePriceSource(),
+];
 
 if (!PRIVATE_KEY) {
   console.error('Missing PRIVATE_KEY env var');
@@ -28,7 +40,7 @@ const app: Application = express();
 const router = routerFactory(
   oracle,
   [Ticker.BTCUSD],
-  new MedianPriceSource(new BitfinexPriceSource(), new CoingeckoPriceSource())
+  new PriceSourceManager(sources, console.error)
 );
 
 app.use(express.json());

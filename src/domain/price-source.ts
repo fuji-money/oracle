@@ -15,25 +15,40 @@ function median(numbers: number[]): number {
   return sorted[middle];
 }
 
-export class MedianPriceSource implements PriceSource {
-  private priceSources: PriceSource[];
+// PriceSourceManager is a PriceSource that aggregates multiple PriceSource and returns the median value of all the prices
+// it handles errors by banning a source for BAN_TIME_MS milliseconds
+export class PriceSourceManager implements PriceSource {
+  static BAN_TIME_MS = 60 * 1000; // 1 minute
 
-  constructor(...priceSources: PriceSource[]) {
-    this.priceSources = priceSources;
-  }
+  private bannedSources: { source: PriceSource; freeAt: number }[] = [];
+
+  constructor(
+    private priceSources: PriceSource[],
+    private errorHandler: (err: unknown) => void,
+    private banTimeMs = PriceSourceManager.BAN_TIME_MS
+  ) {}
 
   async getPrice(ticker: Ticker): Promise<number> {
-    const prices = await Promise.allSettled(
+    await this.freeBannedSources();
+
+    if (this.priceSources.length === 0) {
+      throw new Error('No price source available');
+    }
+
+    const pricesPromises = await Promise.allSettled(
       this.priceSources.map((priceSource) => priceSource.getPrice(ticker))
     );
     // print errors, will throw later if no price feed is available
-    for (const price of prices) {
+    for (const [index, price] of pricesPromises.entries()) {
       if (price.status === 'rejected') {
-        console.error(price.reason);
+        const source = this.priceSources[index];
+        this.ban(source);
+        this.deletePriceSource(index);
+        this.errorHandler(price.reason);
       }
     }
 
-    const fulfilledPrices = prices.filter(
+    const fulfilledPrices = pricesPromises.filter(
       (price) => price.status === 'fulfilled'
     ) as PromiseFulfilledResult<number>[];
     if (fulfilledPrices.length === 0) {
@@ -41,5 +56,27 @@ export class MedianPriceSource implements PriceSource {
     }
 
     return median(fulfilledPrices.map((price) => price.value));
+  }
+
+  private deletePriceSource(index: number) {
+    this.priceSources.splice(index, 1);
+  }
+
+  private ban(source: PriceSource) {
+    this.bannedSources.push({
+      source,
+      freeAt: Date.now() + this.banTimeMs,
+    });
+  }
+
+  private async freeBannedSources() {
+    const now = Date.now();
+    this.bannedSources = this.bannedSources.filter(({ freeAt, source }) => {
+      if (freeAt < now) {
+        this.priceSources.push(source);
+        return false;
+      }
+      return true;
+    });
   }
 }
