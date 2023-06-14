@@ -1,6 +1,9 @@
 import axios from 'axios';
+import axiosThrottle from 'axios-request-throttle';
 import { PriceSource } from '../domain/price-source';
 import { Ticker } from '../domain/ticker';
+
+axiosThrottle.use(axios, { requestsPerSecond: 5 });
 
 type BitfinexResponse = {
   last_price: string;
@@ -17,6 +20,7 @@ export class BitfinexPriceSource implements PriceSource {
     const response = await axios.get<BitfinexResponse>(
       `${BitfinexPriceSource.URL}/${ticker}`
     );
+
     if (!isBitfinexResponse(response.data)) {
       throw new Error(
         `Invalid response from ${BitfinexPriceSource.URL}/${ticker}`

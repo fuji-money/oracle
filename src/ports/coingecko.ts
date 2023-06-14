@@ -1,6 +1,9 @@
 import axios from 'axios';
+import axiosThrottle from 'axios-request-throttle';
 import { PriceSource } from '../domain/price-source';
 import { Ticker } from '../domain/ticker';
+
+axiosThrottle.use(axios, { requestsPerSecond: 1 });
 
 type CoingeckoParameters = {
   id: string;
