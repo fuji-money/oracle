@@ -1,14 +1,10 @@
+import * as ecc from 'tiny-secp256k1';
 import { Get, Route, Tags, Path, Query } from 'tsoa';
-import axios from 'axios';
 import crypto from 'crypto';
 import { ECPairInterface } from 'ecpair';
-import { extractErrorMessage } from '../utils/axiosError';
 import { uint64LE } from '../utils/bufferutils';
-
-type BitfinexResponse = {
-  timestamp: string;
-  last_price: string;
-};
+import { PriceSource } from '../domain/price-source';
+import { Ticker } from '../domain/ticker';
 
 export type OracleAttestation = {
   timestamp: string;
@@ -31,7 +27,7 @@ export default class OracleController {
   constructor(
     private keyPair: ECPairInterface,
     private availableTickers: string[],
-    private url: string
+    private priceSource: PriceSource
   ) {}
 
   @Get('/')
@@ -42,35 +38,45 @@ export default class OracleController {
     };
   }
 
+  private getTimestampNowMs(): number {
+    return Math.trunc(Date.now());
+  }
+
+  private isTickerAvailable(ticker: string): ticker is Ticker {
+    return this.availableTickers.includes(ticker);
+  }
+
   @Get('/:ticker')
   public async getAttestationForTicker(
     @Path() ticker: string,
     @Query() timestamp: string,
     @Query() lastPrice: string
   ): Promise<OracleAttestation | null> {
-    if (!this.availableTickers.includes(ticker)) return null;
+    if (!this.isTickerAvailable(ticker)) return null;
 
     // if we pass the timestamp and lastPrice via querystring we "simulate" the oracle and skip calling the price feed
     let timestampToUse = Number(timestamp);
     let lastPriceToUse = Number(lastPrice);
     if (!timestamp || !lastPrice) {
-      try {
-        const response = await axios.get(`${this.url}/${ticker}`);
-        if (response.status !== 200) throw new Error(response.data);
-        const data: BitfinexResponse = response.data;
-        timestampToUse = Math.trunc(Number(data.timestamp) * 1000); //bitfinex returns it in seconds
-        lastPriceToUse = Math.trunc(Number(data.last_price));
-      } catch (error: unknown) {
-        throw new Error(extractErrorMessage(error));
-      }
+      const price = await this.priceSource.getPrice(ticker);
+      timestampToUse = this.getTimestampNowMs();
+      lastPriceToUse = Math.trunc(price);
     }
 
     try {
       const timpestampLE64 = uint64LE(timestampToUse);
       const priceLE64 = uint64LE(lastPriceToUse);
-      const message = Buffer.from([...timpestampLE64, ...priceLE64]);
+      const iso4217currencyCode = Buffer.from(ticker.replace('BTC', ''));
+      const message = Buffer.from([
+        ...timpestampLE64,
+        ...priceLE64,
+        ...iso4217currencyCode,
+      ]);
       const hash = crypto.createHash('sha256').update(message).digest();
-      const signature = this.keyPair.signSchnorr(hash);
+      if (!this.keyPair.privateKey) throw new Error('No private key found');
+      const signature = Buffer.from(
+        ecc.signSchnorr(hash, this.keyPair.privateKey, Buffer.alloc(32))
+      );
       return {
         timestamp: timestampToUse!.toString(),
         lastPrice: lastPriceToUse!.toString(),

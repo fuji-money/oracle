@@ -15,17 +15,18 @@ const tests = [
         '97abcd30d2cac1c96271711e567ee13ec27ce4360def5f58caea31eb7c926062',
       publicKey:
         '03f03225c0efa4da141b7ed4b1d2368732719c9430bd329ed8a757fa0022833d3f',
+      assetPair: 'BTCUSD',
     },
     expected: {
       timestampUnix: '1656508635',
       priceTruncated: '20095',
       timestampBytes: 'db50bc6200000000',
       lastPriceBytes: '7f4e000000000000',
-      message: 'db50bc62000000007f4e000000000000',
+      message: 'db50bc62000000007f4e000000000000555344',
       messageHash:
-        'e712152ffd387b4e8c0cb2e1c0db3d786ea9f792fadd164fffdaeeb6a5dc59bc',
+        '8d276e5b86bcfa2b29834aae9aca8eb592fa67ce618528b800e4fa06414b1235',
       signature:
-        '834d6f7c13d2502cf221c98ca90039daf5543fc26659d92036599c60cdf2e924fdc3fa5a3fff38e2877d5f30ec5825940fc0eeb2ec1f8e1714297589f1387d97',
+        '0843c8851aecdacc456edbe5d8a832acde88913ddf3d217452ebc7d06cbfd7cb7418778d2276b60c4b72ea722c4180d6808240ec646a64b37e49747e93d3d91d',
     },
   },
   {
@@ -37,17 +38,18 @@ const tests = [
         '97abcd30d2cac1c96271711e567ee13ec27ce4360def5f58caea31eb7c926062',
       publicKey:
         '03f03225c0efa4da141b7ed4b1d2368732719c9430bd329ed8a757fa0022833d3f',
+      assetPair: 'BTCUSD',
     },
     expected: {
       timestampUnix: '1640991600',
       priceTruncated: '47169',
       timestampBytes: 'db50bc6200000000',
       lastPriceBytes: '7f4e000000000000',
-      message: '708bcf610000000041b8000000000000',
+      message: '708bcf610000000041b8000000000000555344',
       messageHash:
-        'a2bb7e36b10851e8b305a5a91fdebec698d8b4013c4013cc577bcb1b9405445d',
+        '7c2ae676d8150104371e025f77eeba9a2c639cfc3e42696ea8053e81c5212949',
       signature:
-        '71a0b684d57c1a2b317b798e2caf21b840598e42d1c0d6966cfdb6266c536166b1a97157bef5eaaa6ee59f0be08986033e633afadd4bc12697d5ec8f38575cc6',
+        '56598aa9cc8d3063055b0365461cbd88cde682203e6622ab533ab6f359e9e3b8cd52eb04ef5d82e790f82ad688bddb1f36a62dc3786a1108209ad6d1b82fee82',
     },
   },
 ];
@@ -65,7 +67,11 @@ describe('attestation', () => {
       const timpestampLE64 = uint64LE(timestampUnix);
       const priceLE64 = uint64LE(priceTruncated);
 
-      const message = Buffer.from([...timpestampLE64, ...priceLE64]);
+      const message = Buffer.from([
+        ...timpestampLE64,
+        ...priceLE64,
+        ...Buffer.from(t.fixture.assetPair.replace('BTC', '')),
+      ]);
       const hash = crypto.createHash('sha256').update(message).digest();
       const signature = keyPair.signSchnorr(hash);
 
