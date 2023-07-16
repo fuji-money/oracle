@@ -9,7 +9,7 @@ export default function routerFactory(
   keyPair: ECPairInterface,
   availableTickers: string[],
   priceSource: PriceSource,
-  isDevelopment: boolean = false
+  isDevelopment = false
 ) {
   const router = express.Router();
 

@@ -42,7 +42,7 @@ const router = routerFactory(
   oracle,
   [Ticker.BTCUSD],
   new PriceSourceManager(sources, console.error),
-  
+  IS_DEVELOPMENT
 );
 
 app.use(express.json());
