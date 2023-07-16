@@ -8,7 +8,8 @@ import { PriceSource } from '../domain/price-source';
 export default function routerFactory(
   keyPair: ECPairInterface,
   availableTickers: string[],
-  priceSource: PriceSource
+  priceSource: PriceSource,
+  isDevelopment: boolean = false
 ) {
   const router = express.Router();
 
@@ -22,7 +23,8 @@ export default function routerFactory(
     const controller = new OracleController(
       keyPair,
       availableTickers,
-      priceSource
+      priceSource,
+      isDevelopment
     );
     const response = controller.getInfo();
     return res.send(response);
