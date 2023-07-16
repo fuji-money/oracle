@@ -28,7 +28,7 @@ export default class OracleController {
     private keyPair: ECPairInterface,
     private availableTickers: string[],
     private priceSource: PriceSource,
-    private isDevelopment: boolean = false,
+    private isDevelopment: boolean = false
   ) {}
 
   @Get('/')
