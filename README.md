@@ -6,13 +6,19 @@ A demo oracle service that produces cryptographic attestations for a given price
 
 ## Supported price feeds
 
+The oracle provides a median average of the following price feeds
+
+- CoinGecko
 - Bitfinex
+- Binance
+- Kraken
+- OKEx
 
 ## Documentation
 
-For API documentation refer to the [Swagger JSON](./public/swagger.json) or use the live [Swagger UI](https://oracle.fuji.money/docs)
+For API documentation refer to the [Swagger JSON](./public/swagger.json) or use the live [Swagger UI](https://oracle.fuji-labs.io/docs)
 
-For the [Oracle's signed price attestation](encoding.md)
+For the **Oracle's signed price attestation** refer to the [FIP-2](https://github.com/fuji-money/fips/blob/main/02.md)
 
 ## Local Development
 

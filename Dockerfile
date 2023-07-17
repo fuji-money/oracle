@@ -16,5 +16,6 @@ COPY --from=builder ./app/build ./build
 
 # $PORT is set by Heroku			
 ENV PORT=$PORT
+ENV NODE_ENV=production
 
 CMD ["yarn", "start"]

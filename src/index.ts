@@ -17,6 +17,7 @@ import { BinancePriceSource } from './ports/binance';
 // ENV vars
 const PORT = process.env.PORT || 8000;
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
+const IS_DEVELOPMENT = process.env.NODE_ENV === 'development';
 
 // oracle price sources (median will be applied)
 const sources = [
@@ -40,7 +41,8 @@ const app: Application = express();
 const router = routerFactory(
   oracle,
   [Ticker.BTCUSD],
-  new PriceSourceManager(sources, console.error)
+  new PriceSourceManager(sources, console.error),
+  IS_DEVELOPMENT
 );
 
 app.use(express.json());

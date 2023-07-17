@@ -27,7 +27,8 @@ export default class OracleController {
   constructor(
     private keyPair: ECPairInterface,
     private availableTickers: string[],
-    private priceSource: PriceSource
+    private priceSource: PriceSource,
+    private isDevelopment: boolean = false
   ) {}
 
   @Get('/')
@@ -54,10 +55,12 @@ export default class OracleController {
   ): Promise<OracleAttestation | null> {
     if (!this.isTickerAvailable(ticker)) return null;
 
-    // if we pass the timestamp and lastPrice via querystring we "simulate" the oracle and skip calling the price feed
+    // DEVELOPMENT ONLY: provide timestamp and lastPrice via querystring to "simulate" the oracle signing the message
     let timestampToUse = Number(timestamp);
     let lastPriceToUse = Number(lastPrice);
-    if (!timestamp || !lastPrice) {
+
+    // PRODUCTION: use the price source to get the timestamp and last price
+    if (!this.isDevelopment) {
       const price = await this.priceSource.getPrice(ticker);
       timestampToUse = this.getTimestampNowMs();
       lastPriceToUse = Math.trunc(price);
