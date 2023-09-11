@@ -13,6 +13,8 @@ import { CoingeckoPriceSource } from './ports/coingecko';
 import { KrakenPriceSource } from './ports/kraken';
 import { OkxPriceSource } from './ports/okx';
 import { BinancePriceSource } from './ports/binance';
+import OracleController from './controllers/oracle';
+import PingController from './controllers/ping';
 
 // ENV vars
 const PORT = process.env.PORT || 8000;
@@ -39,10 +41,13 @@ const oracle = ECPair.fromPrivateKey(Buffer.from(PRIVATE_KEY, 'hex'));
 const app: Application = express();
 
 const router = routerFactory(
-  oracle,
-  [Ticker.BTCUSD],
-  new PriceSourceManager(sources, console.error),
-  IS_DEVELOPMENT
+  new OracleController(
+    oracle,
+    [Ticker.BTCUSD],
+    new PriceSourceManager(sources, console.error),
+    IS_DEVELOPMENT
+  ),
+  new PingController()
 );
 
 app.use(express.json());
