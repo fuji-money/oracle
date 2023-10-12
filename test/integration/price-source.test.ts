@@ -82,6 +82,8 @@ describe('PriceSourceManager', () => {
       banTime
     );
 
+    expect(priceSource.priceSources.length).toBe(3);
+
     const firstCall = await priceSource.getPrice(Ticker.BTCUSD);
     expect(firstCall).toBe(200);
     expect(errHandler).toHaveBeenCalledTimes(1);
@@ -90,6 +92,7 @@ describe('PriceSourceManager', () => {
     expect(secondCall).toBe(200);
     // should not call errHandler again (banned for 1 minute)
     expect(errHandler).toHaveBeenCalledTimes(1);
+    expect(priceSource.priceSources.length).toBe(2);
 
     // wait banTime + 1 second
     await new Promise((resolve) => setTimeout(resolve, banTime));

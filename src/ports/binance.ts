@@ -29,7 +29,7 @@ function toBinanceSymbol(ticker: Ticker): string {
 }
 
 export class BinancePriceSource implements PriceSource {
-  static URL = 'https://data.binance.com/api/v3/ticker/24hr';
+  static URL = 'https://api.binance.com/api/v3/ticker/24hr';
 
   async getPrice(ticker: Ticker): Promise<number> {
     const symbol = toBinanceSymbol(ticker);
@@ -39,7 +39,7 @@ export class BinancePriceSource implements PriceSource {
 
     if (!isBinanceResponse(response.data)) {
       throw new Error(
-        `Invalid response from ${BinancePriceSource.URL}/${ticker}`
+        `Invalid response from ${BinancePriceSource.URL}?symbol=${ticker}`
       );
     }
 
