@@ -23,13 +23,13 @@ export class PriceSourceManager implements PriceSource {
   private bannedSources: { source: PriceSource; freeAt: number }[] = [];
 
   constructor(
-    private priceSources: PriceSource[],
+    public priceSources: PriceSource[],
     private errorHandler: (err: unknown) => void,
     private banTimeMs = PriceSourceManager.BAN_TIME_MS
   ) {}
 
   async getPrice(ticker: Ticker): Promise<number> {
-    await this.freeBannedSources();
+    this.freeBannedSources();
 
     if (this.priceSources.length === 0) {
       throw new Error('No price source available');
@@ -59,7 +59,7 @@ export class PriceSourceManager implements PriceSource {
   }
 
   private deletePriceSource(index: number) {
-    this.priceSources.splice(index, 1);
+    this.priceSources = this.priceSources.filter((_, i) => i !== index);
   }
 
   private ban(source: PriceSource) {
@@ -69,7 +69,7 @@ export class PriceSourceManager implements PriceSource {
     });
   }
 
-  private async freeBannedSources() {
+  private freeBannedSources() {
     const now = Date.now();
     this.bannedSources = this.bannedSources.filter(({ freeAt, source }) => {
       if (freeAt < now) {
