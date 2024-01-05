@@ -24,7 +24,7 @@ const IS_DEVELOPMENT = process.env.NODE_ENV === 'development';
 // oracle price sources (median will be applied)
 const sources = [
   new BitfinexPriceSource(),
-  new CoingeckoPriceSource(),
+  //new CoingeckoPriceSource(),
   new KrakenPriceSource(),
   new OkxPriceSource(),
   new BinancePriceSource(),
